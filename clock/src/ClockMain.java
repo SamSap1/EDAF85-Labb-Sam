@@ -15,9 +15,6 @@ public class ClockMain {
         out.displayTime(15, 2, 37);   // arbitrary time: just an example
 
         t1.start();
-
-        
-
         while (true) {
             in.getSemaphore().acquire();
 

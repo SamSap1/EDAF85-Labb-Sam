@@ -29,9 +29,6 @@ public void setCurrentTime(int hours, int mins, int secs) throws InterruptedExce
 public void incrementTime(){
   
   while (true){
- 
-
-   
         currentSeconds++;
             if (currentSeconds >= 60){
                 this.currentSeconds = 0;
@@ -44,15 +41,9 @@ public void incrementTime(){
                         currentHours = 0;
                 }
             }
-
-              
-
             }
 
 }
-
-
-
 public void setAlarmTime(int hours, int mins, int secs) throws InterruptedException{
 
     sem.acquire();
@@ -67,13 +58,10 @@ public void toggleAlarm() throws InterruptedException{
     sem.acquire();
     this.alarmOn = !this.alarmOn;
     sem.release();
-
 } 
 
 public boolean isAlarmOn(){
     return alarmOn;
-
-
 }
 
 public boolean alarmTrigger(){
@@ -82,9 +70,7 @@ public boolean alarmTrigger(){
 
     }
     return false;
-
 }
-
 
 public int getCurrentHours(){
     return currentHours;
@@ -110,8 +96,5 @@ public int getAlarmMinutes(){
 public int getAlarmSeconds(){
     return alarmSeconds;
 }
-
-
-
 
 }
