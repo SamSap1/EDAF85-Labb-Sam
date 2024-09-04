@@ -37,6 +37,7 @@ public class ClockMain {
 
                     case TOGGLE_ALARM:
                      mon.toggleAlarm();
+                     out.setAlarmIndicator(mon.isAlarmOn());
 
                     break;
 

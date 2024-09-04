@@ -26,22 +26,22 @@ public void setCurrentTime(int hours, int mins, int secs) throws InterruptedExce
         sem.release();
 }
 
-public void incrementTime(){
+public void incrementTime() throws InterruptedException{
   
-  while (true){
         currentSeconds++;
             if (currentSeconds >= 60){
-                this.currentSeconds = 0;
+                currentSeconds = 0;
                 currentMinutes++;
                 if (currentMinutes >= 60){
-                    this.currentMinutes = 0;
+                    currentMinutes = 0;
                     currentHours++;
                 }
                 if (currentHours >= 24){
                         currentHours = 0;
                 }
             }
-            }
+            
+            
 
 }
 public void setAlarmTime(int hours, int mins, int secs) throws InterruptedException{
@@ -72,29 +72,58 @@ public boolean alarmTrigger(){
     return false;
 }
 
-public int getCurrentHours(){
-    return currentHours;
+public int getCurrentHours() throws InterruptedException{
+    sem.acquire();
+
+    int hourHolder = currentHours;
+    sem.release();
+    return hourHolder;
+
+
+    }
+    public int getCurrentMinutes() throws InterruptedException{
+        
+        sem.acquire();
+        int minHolder = currentMinutes;
+        sem.release();
+        return minHolder;
+
+        
+    }public int getCurrentSeconds() throws InterruptedException{
+        sem.acquire();
+        int secsHolder = currentSeconds;
+        sem.release();
+        return secsHolder;
+        
+    }
+
+public int getAlarmHours()throws InterruptedException{ 
+
+    sem.acquire();
+    int alHourHolder = alarmHours;
+    sem.release();
+    return alHourHolder;
+
+}
+
+
+public int getAlarmMinutes()throws InterruptedException{
+    sem.acquire();
+    int alMinHolder = alarmMinutes;
+    sem.release();
+    return alMinHolder;
     
-    }
-    public int getCurrentMinutes(){
-    return currentMinutes;
-        
-    }public int getCurrentSeconds(){
-    return currentSeconds;
-        
-    }
 
-public int getAlarmHours(){
-    return alarmHours;
 }
 
+public int getAlarmSeconds()throws InterruptedException{
 
-public int getAlarmMinutes(){
-    return alarmMinutes;
-}
-
-public int getAlarmSeconds(){
-    return alarmSeconds;
+    sem.acquire();
+        int alSecHolder = alarmSeconds;
+        sem.release();
+        return alSecHolder;
+        
+   
 }
 
 }

@@ -16,8 +16,8 @@ public class ClockThread extends Thread{
     public void run(){
         try {
             while (true){
-               
                 t+= 1000; 
+
                 diff = t - System.currentTimeMillis();
 
                 if (diff > 0){
@@ -27,10 +27,11 @@ public class ClockThread extends Thread{
                 else {
                     continue;
                 }
+                
 
                 mon.incrementTime();
 
-                output.displayTime(mon.getCurrentHours(), mon.getCurrentMinutes(), mon.getAlarmSeconds());
+                output.displayTime(mon.getCurrentHours(), mon.getCurrentMinutes(), mon.getCurrentSeconds());
 
 
 
