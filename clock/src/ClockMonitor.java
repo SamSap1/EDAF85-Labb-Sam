@@ -50,6 +50,8 @@ public void setAlarmTime(int hours, int mins, int secs) throws InterruptedExcept
     this.alarmHours = hours;
     this.alarmMinutes = mins;
     this.alarmSeconds = secs;
+  //  out.setAlarmIndicator(true);
+
 
     sem.release();
 }
