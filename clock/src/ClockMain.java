@@ -16,14 +16,16 @@ public class ClockMain {
 
         t1.start();
 
+        
+
         while (true) {
+            in.getSemaphore().acquire();
+
             UserInput userInput = in.getUserInput();
             Choice c = userInput.choice();
             int h = userInput.hours();
             int m = userInput.minutes();
             int s = userInput.seconds();
-
-
 
             switch (c) {
                 case SET_TIME:
