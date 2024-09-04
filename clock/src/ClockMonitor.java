@@ -26,8 +26,10 @@ public void setCurrentTime(int hours, int mins, int secs) throws InterruptedExce
         sem.release();
 }
 
-public void incrementTime() throws InterruptedException{
-    sem.acquire();
+public void incrementTime(){
+  
+  while (true){
+ 
 
    
         currentSeconds++;
@@ -42,7 +44,11 @@ public void incrementTime() throws InterruptedException{
                         currentHours = 0;
                 }
             }
-                sem.release();
+
+              
+
+            }
+
 }
 
 

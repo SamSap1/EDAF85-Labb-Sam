@@ -4,8 +4,7 @@ public class ClockThread extends Thread{
     private final ClockMonitor mon;
     private final ClockOutput output;
 
-
-    private ClockThread(ClockMonitor monitor, ClockOutput output){
+    public ClockThread(ClockMonitor monitor, ClockOutput output){
         this.mon = monitor;
         this.output = output;
     }
@@ -24,10 +23,13 @@ public class ClockThread extends Thread{
 
 
 
-                if (mon.alarmTrigger()){
-                    
+                    if (mon.alarmTrigger()){
+                        for(int i = 0; i < 20; i++){
+                            output.alarm();
+                        }
+                      
 
-                }
+                    }   
 
             }
 
