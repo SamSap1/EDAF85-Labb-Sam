@@ -5,6 +5,7 @@ public class ClockThread extends Thread{
     private final ClockOutput output;
     private long t; 
     private long diff;
+    private int counter = 20;
 
     public ClockThread(ClockMonitor monitor, ClockOutput output){
         this.mon = monitor;
@@ -18,34 +19,25 @@ public class ClockThread extends Thread{
             while (true){
                 t+= 1000; 
 
-                diff = t - System.currentTimeMillis();
-
-                if (diff > 0){
-                    Thread.sleep(diff);
-
-                }
-                else {
-                    continue;
-                }
-                
-
                 mon.incrementTime();
 
                 output.displayTime(mon.getCurrentHours(), mon.getCurrentMinutes(), mon.getCurrentSeconds());
 
-
-
-
                 // THIS IS WRONG
-                    if (mon.alarmTrigger()){
-                        for(int i = 0; i < 20; i++){
-                            output.alarm();
-                        }
+
+                    mon.alarmTrigger();
                       
+
+                        diff = t - System.currentTimeMillis();
+
+                        if (diff > 0){
+                            Thread.sleep(diff);
+        
+                        }
 
                     }   
 
-            }
+            
 
         } catch (Exception e) {
             e.printStackTrace();

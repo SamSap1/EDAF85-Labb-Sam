@@ -2,6 +2,8 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import clock.io.ClockOutput;
+
 
 public class ClockMonitor {
 
@@ -11,23 +13,40 @@ private int currentSeconds;
 private int alarmHours;
 private int alarmMinutes;
 private int alarmSeconds;
+private ClockOutput output;
 private boolean alarmOn;
+
+
+private int counter;
 private final Semaphore sem = new Semaphore(1);
 
 
+public ClockMonitor (ClockOutput output) throws InterruptedException{
 
-public void setCurrentTime(int hours, int mins, int secs) throws InterruptedException{
-    
+    sem.acquire();
+    this.output = output;
+    sem.release();
 
-        sem.acquire();
-        this.currentHours = hours;
-        this.currentMinutes = mins;
-        this.currentSeconds = secs;
-        sem.release();
 }
 
+
+public void setCurrentTime(int hours, int mins, int secs) throws InterruptedException{
+    sem.acquire();
+    this.currentHours = hours;
+    this.currentMinutes = mins;
+    this.currentSeconds = secs;
+    sem.release();
+
+
+    
+}
+
+
+//Should have a semaphore
 public void incrementTime() throws InterruptedException{
   
+    sem.acquire();
+
         currentSeconds++;
             if (currentSeconds >= 60){
                 currentSeconds = 0;
@@ -40,6 +59,8 @@ public void incrementTime() throws InterruptedException{
                         currentHours = 0;
                 }
             }
+
+            sem.release();
             
             
 
@@ -56,22 +77,41 @@ public void setAlarmTime(int hours, int mins, int secs) throws InterruptedExcept
     sem.release();
 }
 
+
 public void toggleAlarm() throws InterruptedException{
     sem.acquire();
     this.alarmOn = !this.alarmOn;
     sem.release();
 } 
 
-public boolean isAlarmOn(){
-    return alarmOn;
+public boolean isAlarmOn() throws InterruptedException{
+    sem.acquire();
+    boolean alarmOnHolder = alarmOn;
+    
+    sem.release();
+    return alarmOnHolder;
 }
 
-public boolean alarmTrigger(){
-    if (alarmOn && currentHours == alarmHours && currentMinutes == alarmMinutes && currentSeconds == alarmSeconds){
-        return true;
+//Should have a semaphore
+public void alarmTrigger() throws InterruptedException{
+   
+        
+    sem.acquire();
+        if (alarmOn){
+        
+            if (currentHours == alarmHours && currentMinutes == alarmMinutes && currentSeconds == alarmSeconds){
+                counter = 0;
 
-    }
-    return false;
+                }
+            if (counter < 20){
+                output.alarm();
+                counter++;
+            }
+        
+        }
+
+        sem.release();
+
 }
 
 public int getCurrentHours() throws InterruptedException{

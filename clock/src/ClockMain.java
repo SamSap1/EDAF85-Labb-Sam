@@ -7,9 +7,9 @@ import clock.io.ClockOutput;
 public class ClockMain {
     public static void main(String[] args) throws InterruptedException {
         AlarmClockEmulator emulator = new AlarmClockEmulator();
-        ClockMonitor mon = new ClockMonitor();
         ClockInput  in  = emulator.getInput();
         ClockOutput out = emulator.getOutput();
+        ClockMonitor mon = new ClockMonitor(out);
         ClockThread t1 = new ClockThread(mon, out);
 
         out.displayTime(15, 2, 37);   // arbitrary time: just an example
@@ -40,7 +40,7 @@ public class ClockMain {
 
                     case TOGGLE_ALARM:
                     mon.toggleAlarm();
-                   out.setAlarmIndicator(true);
+                   out.setAlarmIndicator(mon.isAlarmOn());
 
 
                     break;
