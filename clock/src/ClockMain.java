@@ -4,18 +4,21 @@ import clock.io.ClockInput;
 import clock.io.ClockInput.UserInput;
 import clock.io.ClockOutput;
 
-public class ClockMain {
-    public static void main(String[] args) throws InterruptedException {
+public class ClockMain
+{
+    public static void main(String[] args) throws InterruptedException
+    {
         AlarmClockEmulator emulator = new AlarmClockEmulator();
-        ClockInput  in  = emulator.getInput();
+        ClockInput in = emulator.getInput();
         ClockOutput out = emulator.getOutput();
         ClockMonitor mon = new ClockMonitor(out);
         ClockThread t1 = new ClockThread(mon, out);
 
-        out.displayTime(15, 2, 37);   // arbitrary time: just an example
+        out.displayTime(15, 2, 37); // arbitrary time: just an example
 
         t1.start();
-        while (true) {
+        while (true)
+        {
             in.getSemaphore().acquire();
 
             UserInput userInput = in.getUserInput();
@@ -24,32 +27,27 @@ public class ClockMain {
             int m = userInput.minutes();
             int s = userInput.seconds();
 
-            switch (c) {
-                case SET_TIME:
-                    mon.setCurrentTime(h, m, s);    
+            switch (c)
+            {
+            case SET_TIME:
+                mon.setCurrentTime(h, m, s);
 
-                    break;
-            
-                   case SET_ALARM:
-                   mon.setAlarmTime(h, m, s);
-                   mon.toggleAlarm();
-                   out.setAlarmIndicator(true);
+                break;
 
+            case SET_ALARM:
+                mon.setAlarmTime(h, m, s);
 
-                    break;
+                break;
 
-                    case TOGGLE_ALARM:
-                    mon.toggleAlarm();
-                   out.setAlarmIndicator(mon.isAlarmOn());
+            case TOGGLE_ALARM:
+                mon.toggleAlarm();
+                out.setAlarmIndicator(mon.isAlarmOn());
 
+                break;
 
-                    break;
-
-                default:
-                    break;
+            default:
+                break;
             }
-
-
 
             System.out.println("choice=" + c + " h=" + h + " m=" + m + " s=" + s);
         }
