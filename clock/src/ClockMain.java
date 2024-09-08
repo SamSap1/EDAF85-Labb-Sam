@@ -31,18 +31,14 @@ public class ClockMain
             {
             case SET_TIME:
                 mon.setCurrentTime(h, m, s);
-
                 break;
 
             case SET_ALARM:
                 mon.setAlarmTime(h, m, s);
-
                 break;
 
             case TOGGLE_ALARM:
                 mon.toggleAlarm();
-                out.setAlarmIndicator(mon.isAlarmOn());
-
                 break;
 
             default:

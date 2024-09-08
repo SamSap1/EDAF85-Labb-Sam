@@ -75,10 +75,12 @@ public class ClockMonitor
     public boolean isAlarmOn() throws InterruptedException
     {
         sem.acquire();
-        boolean alarmOnHolder = alarmOn;
-
-        sem.release();
-        return alarmOnHolder;
+        try {
+            return alarmOn;
+        } finally
+        {
+            sem.release();
+        }
     }
     public void alarmTrigger() throws InterruptedException
     {
@@ -87,17 +89,18 @@ public class ClockMonitor
         {
             if (currentHours == alarmHours && currentMinutes == alarmMinutes && currentSeconds == alarmSeconds)
             {
-                output.alarm();
                 counter = 1;
             }
-            else if (counter > 0 && counter <= 5) // ska vara 20 men temp lägre för debugging
+            if (counter > 0 && counter <= 20)
             {
                 output.alarm();
                 counter++;
             }
-            else if (counter > 5) // ibid
+            else if (counter > 20)
             {
+                sem.release();
                 toggleAlarm();
+                sem.acquire();
                 counter = 0;
             }
         }
@@ -134,6 +137,7 @@ public class ClockMonitor
 
     public int getAlarmMinutes() throws InterruptedException
     {
+        sem.acquire();
         try
         {
             return alarmMinutes;
@@ -145,6 +149,7 @@ public class ClockMonitor
 
     public int getAlarmSeconds() throws InterruptedException
     {
+        sem.acquire();
         try
         {
             return alarmSeconds;
