@@ -22,6 +22,7 @@ public class ClockMonitor
         sem.release();
     }
 
+
     public void setCurrentTime(int hours, int mins, int secs) throws InterruptedException
     {
         sem.acquire();
@@ -159,6 +160,8 @@ public class ClockMonitor
         }
     }
 
+
+    
     public class CurrentTime
     {
         private final int currH;
