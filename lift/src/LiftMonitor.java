@@ -59,12 +59,43 @@ public class LiftMonitor {
 
 
     public synchronized int moveLift () throws InterruptedException{
-        if ((priorityEntry[liftFloor] > 0 || priorityExit[liftFloor] > 0) && ){
+    
+return 0;
+
+    }
+
+    public synchronized boolean passengersWaiting() throws InterruptedException{
+
+       if (priorityEntry[liftFloor] > 0 || priorityExit[liftFloor] > 0){
+            return true;
 
 
-        }
+       }
+
+       return false;
 
 
+
+    }
+
+    public synchronized void openDoors(int floor){
+
+
+
+    }
+  public synchronized void closeDoors(int floor){
+
+
+        
+    }
+
+
+    public synchronized void requestEntry (int floor){
+
+    }
+     
+        public synchronized void requestExit (int floor){
+        
     }
 
 
