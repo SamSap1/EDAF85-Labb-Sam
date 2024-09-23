@@ -6,6 +6,7 @@ public class LiftMonitor {
     private int destFloor;
     private int [] priorityEntry;
     private int [] priorityExit;
+    private boolean liftMoving;
     private boolean entering;
     private boolean exiting;
     private int maxPassengers;
@@ -17,6 +18,8 @@ public class LiftMonitor {
         liftFloor = 0;
         pplInLift = 0;
         isLiftFull = false;
+        liftMoving = true;
+        exiting = false;
         priorityEntry = new int[floorCount];
         priorityExit = new int[floorCount];
         this.maxPassengers = maxPassengers;
