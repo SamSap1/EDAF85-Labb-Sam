@@ -64,7 +64,7 @@ public class LiftMonitor {
 
     public synchronized int moveLift () throws InterruptedException{
     
-        while (pplInLift > 0 || priorityEntry[currFloor] > 0 || priorityExit[currFloor] > 0){
+        while (pplInLift > 0 || passengersWaiting()){
 
             wait();
 
