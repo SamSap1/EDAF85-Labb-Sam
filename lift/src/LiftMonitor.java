@@ -56,4 +56,17 @@ public class LiftMonitor {
         exiting = true;
         notifyAll();
     }
+
+
+    public synchronized int moveLift () throws InterruptedException{
+        if ((priorityEntry[liftFloor] > 0 || priorityExit[liftFloor] > 0) && ){
+
+
+        }
+
+
+    }
+
+
+
 }
