@@ -2,8 +2,8 @@ import lift.LiftView;
 
 public class LiftMonitor {
     private boolean isLiftFull;
-    private int liftFloor;
-    private int destFloor;
+    private int currFloor;
+    private int direction;
     private int [] priorityEntry;
     private int [] priorityExit;
     private boolean liftMoving;
@@ -15,8 +15,9 @@ public class LiftMonitor {
 
 
     public LiftMonitor(int floorCount, int maxPassengers){
-        liftFloor = 0;
+        currFloor = 0;
         pplInLift = 0;
+        direction = 1;
         isLiftFull = false;
         liftMoving = true;
         exiting = false;
@@ -28,7 +29,7 @@ public class LiftMonitor {
 
     public synchronized void enterLift(int personFloor) throws InterruptedException
     {
-        while (pplInLift == maxPassengers || personFloor != liftFloor)
+        while (pplInLift == maxPassengers || personFloor != currFloor)
         {
             wait();
         }
@@ -45,7 +46,7 @@ public class LiftMonitor {
 
     public synchronized void exitLift(int personFloor) throws InterruptedException
     {
-        while (pplInLift == 0 || personFloor != liftFloor)
+        while (pplInLift == 0 || personFloor != currFloor)
         {
             wait();
         }
@@ -63,13 +64,37 @@ public class LiftMonitor {
 
     public synchronized int moveLift () throws InterruptedException{
     
-return 0;
+        while (pplInLift > 0 || priorityEntry[currFloor] > 0 || priorityExit[currFloor] > 0){
+
+            wait();
+
+        }
+
+        liftMoving = true;
+
+        currFloor += direction;
+        
+        if (currFloor == 0 || currFloor == 6){
+            direction *= -1; 
+
+        }
+
+        lv.moveLift(currFloor - direction, currFloor);
+        openDoors(currFloor);
+        //ksk vänta?
+        closeDoors(currFloor);
+        liftMoving = false;
+
+        notifyAll();
+        
+
+return currFloor;
 
     }
 
     public synchronized boolean passengersWaiting() throws InterruptedException{
 
-       if (priorityEntry[liftFloor] > 0 || priorityExit[liftFloor] > 0){
+       if (priorityEntry[currFloor] > 0 || priorityExit[currFloor] > 0){
             return true;
 
 
@@ -82,13 +107,13 @@ return 0;
     }
 
     public synchronized void openDoors(int floor){
-
+        lv.openDoors(floor);
 
 
     }
   public synchronized void closeDoors(int floor){
 
-
+    lv.closeDoors();
         
     }
 
