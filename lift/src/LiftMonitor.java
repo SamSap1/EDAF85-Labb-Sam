@@ -64,7 +64,7 @@ public class LiftMonitor {
 
     public synchronized int moveLift () throws InterruptedException{
     
-        while (pplInLift > 0 || passengersWaiting()){
+        while (pplInLift > 0 || priorityEntry[currFloor] > 0 || priorityExit[currFloor] > 0){
 
             wait();
 
@@ -92,19 +92,6 @@ return currFloor;
 
     }
 
-    public synchronized boolean passengersWaiting() throws InterruptedException{
-
-       if (priorityEntry[currFloor] > 0 || priorityExit[currFloor] > 0){
-            return true;
-
-
-       }
-
-       return false;
-
-
-
-    }
 
     public synchronized void openDoors(int floor){
         lv.openDoors(floor);
