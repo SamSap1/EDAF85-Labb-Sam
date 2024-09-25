@@ -2,6 +2,8 @@ import lift.LiftView;
 
 public class LiftMonitor {
     private boolean isLiftFull;
+    private boolean doorsOpen;
+    private boolean doorsClosed;
     private int currFloor;
     private int direction;
     private int [] priorityEntry;
@@ -18,6 +20,8 @@ public class LiftMonitor {
         currFloor = 0;
         pplInLift = 0;
         direction = 1;
+        doorsOpen = false;
+        doorsClosed = true;
         isLiftFull = false;
         liftMoving = true;
         exiting = false;
@@ -60,11 +64,10 @@ public class LiftMonitor {
         exiting = true;
         notifyAll();
     }
-
-
+    
     public synchronized int moveLift () throws InterruptedException{
     
-        while (pplInLift > 0 || priorityEntry[currFloor] > 0 || priorityExit[currFloor] > 0){
+        while (entering || exiting || priorityEntry[currFloor] > 0 || priorityExit[currFloor] > 0){
 
             wait();
 
@@ -79,40 +82,41 @@ public class LiftMonitor {
 
         }
 
-        lv.moveLift(currFloor - direction, currFloor);
-        openDoors(currFloor);
-        //ksk vänta?
-        closeDoors(currFloor);
-        liftMoving = false;
-
         notifyAll();
-        
-
-return currFloor;
-
-    }
+        return currFloor;
+ }       
 
 
     public synchronized void openDoors(int floor){
+        doorsClosed = false;
+        doorsOpen = true;
         lv.openDoors(floor);
 
 
     }
-  public synchronized void closeDoors(int floor){
-
+  public synchronized void closeDoors(){
+    doorsOpen = false;
+    doorsClosed = true;
     lv.closeDoors();
         
     }
 
 
-    public synchronized void requestEntry (int floor){
+    //public synchronized void requestEntry (int floor){
 
-    }
+    //}
      
-        public synchronized void requestExit (int floor){
+      //  public synchronized void requestExit (int floor){
         
-    }
+    //}
 
+    public synchronized boolean canMove(){
+            if (doorsClosed){
+                return true;
+            }
+             return false;
+
+    }
 
 
 }
