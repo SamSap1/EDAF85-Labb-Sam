@@ -1,14 +1,16 @@
+import lift.LiftView;
 import lift.Passenger;
 
 public class PassengerThread extends Thread
 {
-    private PassengerGenerator p;
-    private LiftMonitor monitor;
+    private PassengerGenerator pass;
+    private LiftMonitor mon;
+    private LiftView lView;
 
     public PassengerThread(LiftMonitor monitor, int floorCount)
     {
-        this.monitor = monitor;
-        this.p = new PassengerGenerator(floorCount);
+        this.mon = monitor;
+        this.pass = new PassengerGenerator(lView, floorCount);
     }
 
     @Override
@@ -18,17 +20,23 @@ public class PassengerThread extends Thread
         {
             while(true)
             {
-                p.begin();
-                int currentFloor = p.getStartFloor();
-                int nextFloor = p.getDestinationFloor();
+                pass.begin();
+                int currentFloor = pass.getStartFloor();
+                int destFloor = pass.getDestinationFloor();
 
-                monitor.enterLift(currentFloor);
-                p.enterLift();
+                mon.enterLift(currentFloor);
+                pass.enterLift();
+
+                // vänta på att liften har rört på sig
+
+                mon.exitLift(destFloor);
+                pass.exitLift();
+                pass.end();
             }
 
-        } catch (Exception e) 
+        } catch (InterruptedException e)
         {
-            
+            e.printStackTrace();
         }
     }
 

@@ -27,8 +27,8 @@ public class LiftThread extends Thread{
                         
                 }
 
-        } catch (Exception e) {
-            
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
     }
