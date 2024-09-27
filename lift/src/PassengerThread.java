@@ -3,14 +3,14 @@ import lift.Passenger;
 
 public class PassengerThread extends Thread
 {
-    private PassengerGenerator pass;
+    private Passenger pass;
     private LiftMonitor mon;
-    private LiftView lView;
+    private LiftView view;
 
     public PassengerThread(LiftMonitor monitor, int floorCount)
     {
         this.mon = monitor;
-        this.pass = new PassengerGenerator(lView, floorCount);
+        this.pass = view.createPassenger();
     }
 
     @Override
