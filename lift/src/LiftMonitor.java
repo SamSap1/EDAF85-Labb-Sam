@@ -3,12 +3,12 @@ import lift.LiftView;
 public class LiftMonitor {
     private boolean isLiftFull;
     private boolean doorsOpen;
-    private boolean doorsClosed;
+   // private boolean doorsClosed;
     private int currFloor;
     private int direction;
     private int [] priorityEntry;
     private int [] priorityExit;
-    private boolean liftMoving;
+    public boolean liftMoving;
     private boolean entering;
     private boolean exiting;
     private int maxPassengers;
@@ -21,7 +21,7 @@ public class LiftMonitor {
         pplInLift = 0;
         direction = 1;
         doorsOpen = false;
-        doorsClosed = true;
+        //doorsClosed = true;
         isLiftFull = false;
         liftMoving = true;
         exiting = false;
@@ -37,6 +37,8 @@ public class LiftMonitor {
         {
             wait();
         }
+
+        lv.openDoors(personFloor);
         pplInLift++;
         priorityEntry[personFloor]--;
         entering = true;
@@ -45,6 +47,7 @@ public class LiftMonitor {
         {
             isLiftFull = true;
         }
+        lv.closeDoors();
         notifyAll();
     }
 
@@ -54,6 +57,8 @@ public class LiftMonitor {
         {
             wait();
         }
+
+        lv.openDoors(currFloor);
         pplInLift--;
         priorityExit[personFloor]--;
 
@@ -62,13 +67,28 @@ public class LiftMonitor {
             isLiftFull = false;
         }
         exiting = true;
+        lv.closeDoors();
         notifyAll();
     }
-    
+
+    public synchronized boolean passCanMove() throws InterruptedException{
+
+        if (!liftMoving){
+            return true;
+
+        }
+
+        return false;
+
+    }
+
+
+
     public synchronized int moveLift () throws InterruptedException{
     
         while (entering || exiting || priorityEntry[currFloor] > 0 || priorityExit[currFloor] > 0){
 
+            liftMoving = false;
             wait();
 
         }
@@ -83,23 +103,11 @@ public class LiftMonitor {
         }
 
         notifyAll();
+
         return currFloor;
  }       
 
 
-    public synchronized void openDoors(int floor){
-        doorsClosed = false;
-        doorsOpen = true;
-        lv.openDoors(floor);
-
-
-    }
-  public synchronized void closeDoors(){
-    doorsOpen = false;
-    doorsClosed = true;
-    lv.closeDoors();
-        
-    }
 
 
     //public synchronized void requestEntry (int floor){
@@ -111,10 +119,10 @@ public class LiftMonitor {
     //}
 
     public synchronized boolean canMove(){
-            if (doorsClosed){
-                return true;
+            if (doorsOpen){
+                return false;
             }
-             return false;
+             return true;
 
     }
 
