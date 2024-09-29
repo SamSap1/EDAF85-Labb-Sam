@@ -22,10 +22,21 @@ public class PassengerThread extends Thread
         {
             while(true)
             {
+
+
+
+
                 pass.begin();
                 int currentFloor = pass.getStartFloor();
                 int destFloor = pass.getDestinationFloor();
                 
+                mon.setPriority(currentFloor);
+
+                while (mon.getCurrentFloor() != currentFloor){
+
+                    System.out.println("Passenger " + pass.getStartFloor() + " entering lift at floor " + currentFloor);
+                    System.out.println("Passenger " + pass.getDestinationFloor() + " exiting lift at floor " + destFloor);
+                }
 
                 boolean hasEntered = false;
                 while (!hasEntered)
@@ -49,6 +60,8 @@ public class PassengerThread extends Thread
                     }
                 }
                 pass.end();
+
+              
                 
             }
 

@@ -15,7 +15,6 @@ public class LiftMonitor {
     private LiftView lv;
     private int pplInLift;
 
-
     public LiftMonitor(int floorCount, int maxPassengers, LiftView lv){
         currFloor = 0;
         pplInLift = 0;
@@ -27,22 +26,31 @@ public class LiftMonitor {
         priorityEntry = new int[floorCount];
         priorityExit = new int[floorCount];
         this.maxPassengers = maxPassengers;
+        //lv = new LiftView(floorCount, maxPassengers);
+
         this.lv = lv;
     }
 
+    public synchronized void setPriority(int start) throws InterruptedException{
+        priorityEntry[start]++;
+       // priorityExit[dest]++;
+
+    }
 
 
     public synchronized void enterLift(int personFloor, int destinationFloor) throws InterruptedException
     {
         while (pplInLift == maxPassengers || personFloor != currFloor)
         {
+            System.out.println("TEST TEST TEST");
+
             wait();
         }
 
 
         entering = true;
         if (!doorsOpen){
-        lv.openDoors(personFloor);
+        lv.openDoors(currFloor);
         doorsOpen = true;
         }
 
@@ -115,7 +123,7 @@ public class LiftMonitor {
 
     public synchronized int moveLift () throws InterruptedException{
     
-        while (entering || exiting || priorityEntry[currFloor] > 0 && pplInLift < maxPassengers || priorityExit[currFloor] > 0 ){
+        while (entering || exiting || (priorityEntry[currFloor] > 0 && pplInLift < maxPassengers) || priorityExit[currFloor] > 0 ){
 
             liftMoving = false;
             
@@ -131,6 +139,10 @@ public class LiftMonitor {
             direction *= -1; 
 
         }
+        System.out.println("Current Floor: " + currFloor + ", Passengers in Lift: " + pplInLift + 
+        ", Passengers Waiting to Enter: " + priorityEntry[currFloor] + 
+    ", Passengers Waiting to Exit: " + priorityExit[currFloor]);
+
 
         notifyAll();
 

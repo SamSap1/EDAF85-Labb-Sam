@@ -1,6 +1,5 @@
 
 import lift.LiftView;
-import lift.Passenger;
 
 public class LiftMain {
     public static void main(String[] args) throws InterruptedException {
@@ -12,7 +11,7 @@ public class LiftMain {
 
        
 
-        for (int i = 0; i < 2; i++){
+        for (int i = 0; i < 1; i++){
             PassengerThread pt = new PassengerThread(mon, view);
             pt.start();
         }
