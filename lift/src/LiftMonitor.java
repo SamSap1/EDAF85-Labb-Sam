@@ -17,11 +17,11 @@ public class LiftMonitor {
 
 
     public LiftMonitor(int floorCount, int maxPassengers, LiftView lv){
+    public LiftMonitor(int floorCount, int maxPassengers, LiftView lv){
         currFloor = 0;
         pplInLift = 0;
         direction = 1;
         doorsOpen = false;
-        //doorsClosed = true;
         isLiftFull = false;
         liftMoving = true;
         exiting = false;
@@ -109,15 +109,9 @@ public class LiftMonitor {
         notifyAll();
     }
 
-    public synchronized boolean passCanMove() throws InterruptedException{
+    public synchronized boolean passCanMove(int personFloor) throws InterruptedException{
 
-        if (!liftMoving && doorsOpen){
-            return true;
-
-        }
-
-        return false;
-
+        return (!liftMoving && doorsOpen && currFloor == personFloor);
     }
 
     public synchronized int getCurrentFloor () throws InterruptedException{
