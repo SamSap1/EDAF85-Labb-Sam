@@ -8,7 +8,7 @@ public class LiftMain {
         final int NBR_FLOORS = 7, MAX_PASSENGERS = 4;
 
         LiftView  view = new LiftView(NBR_FLOORS, MAX_PASSENGERS);
-        LiftMonitor mon = new LiftMonitor(NBR_FLOORS, MAX_PASSENGERS);
+        LiftMonitor mon = new LiftMonitor(NBR_FLOORS, MAX_PASSENGERS, view);
 
        
 

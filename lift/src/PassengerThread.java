@@ -22,22 +22,24 @@ public class PassengerThread extends Thread
         {
             while(true)
             {
-
                 pass.begin();
                 int currentFloor = pass.getStartFloor();
                 int destFloor = pass.getDestinationFloor();
+                
 
-
-                if (mon.passCanMove() && mon.getCurrentFloor() == currentFloor){
-
+                boolean hasEntered = false;
+                while (!hasEntered)
+                {
                     mon.enterLift(currentFloor, destFloor);
                     pass.enterLift();
+                    hasEntered = true;
                 }
 
-                if (mon.passCanMove() && mon.getCurrentFloor() == destFloor){
+                boolean hasExited = false;
+                while (!hasExited){
                     mon.exitLift(destFloor);
                     pass.exitLift();
-                    
+                    hasExited = true;
                 }
                 pass.end();
                 
