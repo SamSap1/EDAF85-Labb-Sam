@@ -19,6 +19,11 @@ public class LiftThread extends Thread{
                 while (true){
                    
 
+
+
+
+                    
+
                    nextFloor =  monitor.moveLift();
                     lv.moveLift(currentFloor, nextFloor);
                     currentFloor = nextFloor;

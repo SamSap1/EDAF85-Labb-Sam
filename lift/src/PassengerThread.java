@@ -11,6 +11,8 @@ public class PassengerThread extends Thread
     {
         this.mon = monitor;
         this.view = view;
+        this.pass = view.createPassenger();
+
     }
 
     @Override
@@ -20,7 +22,6 @@ public class PassengerThread extends Thread
         {
             while(true)
             {
-                this.pass = view.createPassenger();
 
                 pass.begin();
                 int currentFloor = pass.getStartFloor();

@@ -1,29 +1,23 @@
+
 import lift.LiftView;
 import lift.Passenger;
 
 public class LiftMain {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         final int NBR_FLOORS = 7, MAX_PASSENGERS = 4;
 
         LiftView  view = new LiftView(NBR_FLOORS, MAX_PASSENGERS);
-        Passenger pass = view.createPassenger();
-        int  fromFloor = pass.getStartFloor();
-        int    toFloor = pass.getDestinationFloor();
+        LiftMonitor mon = new LiftMonitor(NBR_FLOORS, MAX_PASSENGERS);
 
-        pass.begin();                        // walk in (from left)
-        if (fromFloor != 0) {
-            view.moveLift(0, fromFloor);
+       
+
+        for (int i = 0; i < 10; i++){
+            PassengerThread pt = new PassengerThread(mon, view);
+            pt.start();
         }
-        view.openDoors(fromFloor);
-        pass.enterLift();                    // step inside
+        LiftThread lt = new LiftThread(view, mon);
+        lt.start();
 
-        view.closeDoors();
-        view.moveLift(fromFloor, toFloor);   // ride lift
-        view.openDoors(toFloor);
-
-        pass.exitLift();                     // leave lift
-        pass.end();                          // walk out (to the right)
-    }
-
+}
 }

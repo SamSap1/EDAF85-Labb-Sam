@@ -28,7 +28,7 @@ public class LiftMonitor {
         priorityEntry = new int[floorCount];
         priorityExit = new int[floorCount];
         this.maxPassengers = maxPassengers;
-        lv = new LiftView(floorCount, maxPassengers);
+        //lv = new LiftView(floorCount, maxPassengers);
     }
 
 
@@ -40,24 +40,31 @@ public class LiftMonitor {
             wait();
         }
 
+
+        if (!doorsOpen){
         lv.openDoors(personFloor);
         doorsOpen = true;
+        }
 
         pplInLift++;
         priorityEntry[personFloor]--;
         priorityExit[destinationFloor]++;
         entering = true;
 
+
         if (pplInLift == maxPassengers)
         {
             isLiftFull = true;
         }
-
-
-        lv.closeDoors();
-
-        doorsOpen = false;
         entering = false;
+
+        if (priorityEntry[personFloor] == 0 || pplInLift == maxPassengers){
+            lv.closeDoors();
+
+            doorsOpen = false;
+        }
+
+       
         notifyAll();
     }
 
@@ -68,8 +75,12 @@ public class LiftMonitor {
             wait();
         }
 
-        lv.openDoors(currFloor);
-        doorsOpen = true;
+
+        if (!doorsOpen){
+            lv.openDoors(currFloor);
+            doorsOpen = true;
+        }
+        
         pplInLift--;
         priorityExit[personFloor]--;
     
@@ -80,8 +91,12 @@ public class LiftMonitor {
             isLiftFull = false;
         }
         exiting = true;
-        lv.closeDoors();
-        doorsOpen = false;
+
+        if (priorityExit[personFloor] == 0){
+            lv.closeDoors();
+            doorsOpen = false;
+        }
+//maybe move exiting?         
         exiting = false;
         notifyAll();
     }
@@ -107,9 +122,10 @@ public class LiftMonitor {
 
     public synchronized int moveLift () throws InterruptedException{
     
-        while (entering || exiting || priorityEntry[currFloor] > 0 || priorityExit[currFloor] > 0){
+        while (entering || exiting || priorityEntry[currFloor] > 0 && pplInLift < maxPassengers || priorityExit[currFloor] > 0 ){
 
             liftMoving = false;
+            
             wait();
 
         }
