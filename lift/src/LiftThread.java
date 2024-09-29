@@ -6,9 +6,10 @@ public class LiftThread extends Thread{
     private int currentFloor;
     private int nextFloor;
 
-    public LiftThread(LiftView view, LiftMonitor monitor){
+    public LiftThread(LiftView view, LiftMonitor monitor) throws InterruptedException{
         this.lv = view;
         this.monitor = monitor;
+        currentFloor = monitor.getCurrentFloor();
     }
 
 
@@ -16,9 +17,7 @@ public class LiftThread extends Thread{
     public void run(){
         try {
                 while (true){
-                    if (!monitor.canMove()){
-                        monitor.closeDoors();
-                    }
+                   
 
                    nextFloor =  monitor.moveLift();
                     lv.moveLift(currentFloor, nextFloor);

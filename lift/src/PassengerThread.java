@@ -11,6 +11,7 @@ public class PassengerThread extends Thread
     {
         this.mon = monitor;
         this.pass = view.createPassenger();
+        
     }
 
     @Override
@@ -24,14 +25,24 @@ public class PassengerThread extends Thread
                 int currentFloor = pass.getStartFloor();
                 int destFloor = pass.getDestinationFloor();
 
-                mon.enterLift(currentFloor);
-                pass.enterLift();
+
+                if (mon.passCanMove() && mon.getCurrentFloor() == currentFloor){
+
+                    mon.enterLift(currentFloor, destFloor);
+                    pass.enterLift();
+    
+
+                }
 
                 // vänta på att liften har rört på sig
 
-                mon.exitLift(destFloor);
-                pass.exitLift();
+                if (mon.passCanMove() && mon.getCurrentFloor() == destFloor){
+                    mon.exitLift(destFloor);
+                    pass.exitLift();
+                    
+                }
                 pass.end();
+                
             }
 
         } catch (InterruptedException e)

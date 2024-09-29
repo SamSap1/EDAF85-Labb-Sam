@@ -31,7 +31,9 @@ public class LiftMonitor {
         lv = new LiftView(floorCount, maxPassengers);
     }
 
-    public synchronized void enterLift(int personFloor) throws InterruptedException
+
+
+    public synchronized void enterLift(int personFloor, int destinationFloor) throws InterruptedException
     {
         while (pplInLift == maxPassengers || personFloor != currFloor)
         {
@@ -39,15 +41,23 @@ public class LiftMonitor {
         }
 
         lv.openDoors(personFloor);
+        doorsOpen = true;
+
         pplInLift++;
         priorityEntry[personFloor]--;
+        priorityExit[destinationFloor]++;
         entering = true;
 
         if (pplInLift == maxPassengers)
         {
             isLiftFull = true;
         }
+
+
         lv.closeDoors();
+
+        doorsOpen = false;
+        entering = false;
         notifyAll();
     }
 
@@ -59,8 +69,11 @@ public class LiftMonitor {
         }
 
         lv.openDoors(currFloor);
+        doorsOpen = true;
         pplInLift--;
         priorityExit[personFloor]--;
+    
+
 
         if (pplInLift < maxPassengers)
         {
@@ -68,12 +81,14 @@ public class LiftMonitor {
         }
         exiting = true;
         lv.closeDoors();
+        doorsOpen = false;
+        exiting = false;
         notifyAll();
     }
 
     public synchronized boolean passCanMove() throws InterruptedException{
 
-        if (!liftMoving){
+        if (!liftMoving && doorsOpen){
             return true;
 
         }
@@ -82,6 +97,12 @@ public class LiftMonitor {
 
     }
 
+    public synchronized int getCurrentFloor () throws InterruptedException{
+
+        return currFloor;
+
+
+    }
 
 
     public synchronized int moveLift () throws InterruptedException{
@@ -108,23 +129,6 @@ public class LiftMonitor {
  }       
 
 
-
-
-    //public synchronized void requestEntry (int floor){
-
-    //}
-     
-      //  public synchronized void requestExit (int floor){
-        
-    //}
-
-    public synchronized boolean canMove(){
-            if (doorsOpen){
-                return false;
-            }
-             return true;
-
-    }
 
 
 }
