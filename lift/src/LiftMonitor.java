@@ -40,6 +40,7 @@ public class LiftMonitor {
         }
 
 
+        entering = true;
         if (!doorsOpen){
         lv.openDoors(personFloor);
         doorsOpen = true;
@@ -48,23 +49,22 @@ public class LiftMonitor {
         pplInLift++;
         priorityEntry[personFloor]--;
         priorityExit[destinationFloor]++;
-        entering = true;
 
 
         if (pplInLift == maxPassengers)
         {
             isLiftFull = true;
         }
-        entering = false;
-
+        
         if (priorityEntry[personFloor] == 0 || pplInLift == maxPassengers){
             lv.closeDoors();
-
+            
             doorsOpen = false;
+            entering = false;
         }
-
-       
-        notifyAll();
+        
+        
+        notifyAll(); // notifierar för tidigt
     }
 
     public synchronized void exitLift(int personFloor) throws InterruptedException
@@ -74,7 +74,8 @@ public class LiftMonitor {
             wait();
         }
 
-
+        
+        exiting = true;
         if (!doorsOpen){
             lv.openDoors(currFloor);
             doorsOpen = true;
@@ -89,13 +90,12 @@ public class LiftMonitor {
         {
             isLiftFull = false;
         }
-        exiting = true;
 
         if (priorityExit[personFloor] == 0){
             lv.closeDoors();
             doorsOpen = false;
         }
-//maybe move exiting?         
+       
         exiting = false;
         notifyAll();
     }

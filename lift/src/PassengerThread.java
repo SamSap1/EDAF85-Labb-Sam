@@ -31,15 +31,22 @@ public class PassengerThread extends Thread
                 while (!hasEntered)
                 {
                     mon.enterLift(currentFloor, destFloor);
-                    pass.enterLift();
-                    hasEntered = true;
+                    if (mon.passCanMove(destFloor))
+                    {
+                        pass.enterLift();
+                        hasEntered = true;
+                    }
                 }
 
                 boolean hasExited = false;
-                while (!hasExited){
+                while (!hasExited)
+                {
                     mon.exitLift(destFloor);
-                    pass.exitLift();
-                    hasExited = true;
+                    if (mon.passCanMove(destFloor))
+                    {
+                        pass.exitLift();
+                        hasExited = true;
+                    }
                 }
                 pass.end();
                 
