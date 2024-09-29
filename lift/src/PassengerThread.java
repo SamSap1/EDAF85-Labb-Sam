@@ -7,11 +7,10 @@ public class PassengerThread extends Thread
     private LiftMonitor mon;
     private LiftView view;
 
-    public PassengerThread(LiftMonitor monitor, int floorCount)
+    public PassengerThread(LiftMonitor monitor, LiftView view)
     {
         this.mon = monitor;
-        this.pass = view.createPassenger();
-        
+        this.view = view;
     }
 
     @Override
@@ -21,6 +20,8 @@ public class PassengerThread extends Thread
         {
             while(true)
             {
+                this.pass = view.createPassenger();
+
                 pass.begin();
                 int currentFloor = pass.getStartFloor();
                 int destFloor = pass.getDestinationFloor();
@@ -30,11 +31,7 @@ public class PassengerThread extends Thread
 
                     mon.enterLift(currentFloor, destFloor);
                     pass.enterLift();
-    
-
                 }
-
-                // vänta på att liften har rört på sig
 
                 if (mon.passCanMove() && mon.getCurrentFloor() == destFloor){
                     mon.exitLift(destFloor);
