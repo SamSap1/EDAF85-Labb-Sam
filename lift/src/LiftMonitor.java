@@ -1,9 +1,7 @@
 import lift.LiftView;
 
 public class LiftMonitor {
-    private boolean isLiftFull;
     private boolean doorsOpen;
-   // private boolean doorsClosed;
     private int currFloor;
     private int direction;
     private int [] priorityEntry;
@@ -20,21 +18,16 @@ public class LiftMonitor {
         pplInLift = 0;
         direction = 1;
         doorsOpen = false;
-        isLiftFull = false;
         liftMoving = true;
         exiting = false;
         priorityEntry = new int[floorCount];
         priorityExit = new int[floorCount];
         this.maxPassengers = maxPassengers;
-        //lv = new LiftView(floorCount, maxPassengers);
-
         this.lv = lv;
     }
 
     public synchronized void setPriority(int start) throws InterruptedException{
         priorityEntry[start]++;
-       // priorityExit[dest]++;
-
     }
 
 
@@ -57,12 +50,6 @@ public class LiftMonitor {
         pplInLift++;
         priorityEntry[personFloor]--;
         priorityExit[destinationFloor]++;
-
-
-        if (pplInLift == maxPassengers)
-        {
-            isLiftFull = true;
-        }
         
         if (priorityEntry[personFloor] == 0 || pplInLift == maxPassengers){
             lv.closeDoors();
@@ -91,13 +78,6 @@ public class LiftMonitor {
         
         pplInLift--;
         priorityExit[personFloor]--;
-    
-
-
-        if (pplInLift < maxPassengers)
-        {
-            isLiftFull = false;
-        }
 
         if (priorityExit[personFloor] == 0){
             lv.closeDoors();
