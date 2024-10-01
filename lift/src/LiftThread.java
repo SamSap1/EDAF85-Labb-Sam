@@ -17,26 +17,14 @@ public class LiftThread extends Thread{
     public void run(){
         try {
                 while (true){
-                   
-
-
-
-
-                    
-
-                   nextFloor =  monitor.moveLift();
+                
+                    nextFloor = monitor.moveLift();
                     lv.moveLift(currentFloor, nextFloor);
                     currentFloor = nextFloor;
-
-                        
                 }
 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
-
-
-    
 }

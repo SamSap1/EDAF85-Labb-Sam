@@ -11,7 +11,7 @@ public class LiftMain {
 
        
 
-        for (int i = 0; i < 1; i++){
+        for (int i = 0; i < 20; i++){
             PassengerThread pt = new PassengerThread(mon, view);
             pt.start();
         }

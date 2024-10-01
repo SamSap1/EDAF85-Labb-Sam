@@ -6,6 +6,7 @@ public class LiftMonitor {
     private int direction;
     private int [] priorityEntry;
     private int [] priorityExit;
+    private int toEnter;
     public boolean liftMoving;
     private boolean entering;
     private boolean exiting;
@@ -14,11 +15,13 @@ public class LiftMonitor {
     private int pplInLift;
 
     public LiftMonitor(int floorCount, int maxPassengers, LiftView lv){
+        toEnter = 0;
         currFloor = 0;
         pplInLift = 0;
         direction = 1;
         doorsOpen = false;
         liftMoving = true;
+        entering = false;
         exiting = false;
         priorityEntry = new int[floorCount];
         priorityExit = new int[floorCount];
@@ -26,110 +29,97 @@ public class LiftMonitor {
         this.lv = lv;
     }
 
-    public synchronized void setPriority(int start) throws InterruptedException{
-        priorityEntry[start]++;
+    public synchronized void hasEntered()
+    {
+        pplInLift++;
+        priorityEntry[currFloor]--;
+        toEnter--;
+        notifyAll();
     }
 
+    public synchronized void hasExited()
+    {
+        pplInLift--;
+        priorityExit[currFloor]--;
+        notifyAll();
+    }
+
+    public synchronized void setPriority(int currFloor) throws InterruptedException{
+
+        priorityEntry[currFloor]++;
+    }
 
     public synchronized void enterLift(int personFloor, int destinationFloor) throws InterruptedException
     {
-        while (pplInLift == maxPassengers || personFloor != currFloor)
+        while (pplInLift + toEnter == maxPassengers || personFloor != currFloor || !doorsOpen)
         {
-            System.out.println("TEST TEST TEST");
-
             wait();
         }
 
-
-        entering = true;
-        if (!doorsOpen){
-        lv.openDoors(currFloor);
-        doorsOpen = true;
-        }
-
-        pplInLift++;
-        priorityEntry[personFloor]--;
+        toEnter++;
         priorityExit[destinationFloor]++;
         
-        if (priorityEntry[personFloor] == 0 || pplInLift == maxPassengers){
-            lv.closeDoors();
-            
-            doorsOpen = false;
-            entering = false;
-        }
-        
-        
-        notifyAll(); // notifierar för tidigt
+        notifyAll();
     }
 
     public synchronized void exitLift(int personFloor) throws InterruptedException
     {
-        while (pplInLift == 0 || personFloor != currFloor)
+        while (pplInLift == 0 || personFloor != currFloor || !doorsOpen)
         {
             wait();
         }
 
-        
-        exiting = true;
-        if (!doorsOpen){
-            lv.openDoors(currFloor);
-            doorsOpen = true;
-        }
-        
-        pplInLift--;
-        priorityExit[personFloor]--;
-
-        if (priorityExit[personFloor] == 0){
-            lv.closeDoors();
-            doorsOpen = false;
-        }
-       
-        exiting = false;
         notifyAll();
     }
 
     public synchronized boolean passCanMove(int personFloor) throws InterruptedException{
 
-        return (!liftMoving && doorsOpen && currFloor == personFloor);
+        return (!liftMoving && doorsOpen && personFloor == currFloor);
     }
 
     public synchronized int getCurrentFloor () throws InterruptedException{
 
         return currFloor;
-
-
     }
 
-
-    public synchronized int moveLift () throws InterruptedException{
-    
-        while (entering || exiting || (priorityEntry[currFloor] > 0 && pplInLift < maxPassengers) || priorityExit[currFloor] > 0 ){
-
-            liftMoving = false;
-            
-            wait();
-
-        }
-
-        liftMoving = true;
-
-        currFloor += direction;
+    public synchronized int moveLift () throws InterruptedException
+    {
         
-        if (currFloor == 0 || currFloor == 6){
-            direction *= -1; 
+        if (priorityExit[currFloor] > 0 || (priorityEntry[currFloor] > 0 && pplInLift < maxPassengers))
+        {
+            lv.openDoors(currFloor);
+            doorsOpen = true;
+            
+            exiting = true;
+            notifyAll();
 
+            while (priorityExit[currFloor] != 0)
+            {
+                wait();
+            }
+            exiting = false;
+
+            entering = true;
+            notifyAll();
+            while (priorityEntry[currFloor] != 0 && pplInLift < maxPassengers)
+            {
+                liftMoving = false;
+                wait();
+            }
+            entering = false;
+            doorsOpen = false;
+            lv.closeDoors();
+            
+            liftMoving = true;
+            
+            lv.showDebugInfo(priorityEntry, priorityExit);
         }
-        System.out.println("Current Floor: " + currFloor + ", Passengers in Lift: " + pplInLift + 
-        ", Passengers Waiting to Enter: " + priorityEntry[currFloor] + 
-    ", Passengers Waiting to Exit: " + priorityExit[currFloor]);
-
-
-        notifyAll();
-
+        
+        currFloor += direction;
+        if (currFloor == 0 || currFloor == 6)
+        {
+            direction *= -1; 
+        }
         return currFloor;
- }       
-
-
-
-
+    }
 }

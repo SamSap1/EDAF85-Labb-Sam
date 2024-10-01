@@ -11,8 +11,6 @@ public class PassengerThread extends Thread
     {
         this.mon = monitor;
         this.view = view;
-        this.pass = view.createPassenger();
-
     }
 
     @Override
@@ -22,47 +20,29 @@ public class PassengerThread extends Thread
         {
             while(true)
             {
-
-
-
-
+                pass = view.createPassenger();
                 pass.begin();
                 int currentFloor = pass.getStartFloor();
                 int destFloor = pass.getDestinationFloor();
                 
                 mon.setPriority(currentFloor);
 
-                while (mon.getCurrentFloor() != currentFloor){
+                // while (mon.getCurrentFloor() != currentFloor){
 
-                    System.out.println("Passenger " + pass.getStartFloor() + " entering lift at floor " + currentFloor);
-                    System.out.println("Passenger " + pass.getDestinationFloor() + " exiting lift at floor " + destFloor);
-                }
+                //     System.out.println("Passenger " + pass.getStartFloor() + " entering lift at floor " + currentFloor);
+                //     System.out.println("Passenger " + pass.getDestinationFloor() + " exiting lift at floor " + destFloor);
+                // }
 
-                boolean hasEntered = false;
-                while (!hasEntered)
-                {
-                    mon.enterLift(currentFloor, destFloor);
-                    if (mon.passCanMove(destFloor))
-                    {
-                        pass.enterLift();
-                        hasEntered = true;
-                    }
-                }
 
-                boolean hasExited = false;
-                while (!hasExited)
-                {
-                    mon.exitLift(destFloor);
-                    if (mon.passCanMove(destFloor))
-                    {
-                        pass.exitLift();
-                        hasExited = true;
-                    }
-                }
+                mon.enterLift(currentFloor, destFloor);
+                pass.enterLift();
+                mon.hasEntered();
+
+                mon.exitLift(destFloor);
+                pass.exitLift();
+                mon.hasExited();
+
                 pass.end();
-
-              
-                
             }
 
         } catch (InterruptedException e)
@@ -70,5 +50,4 @@ public class PassengerThread extends Thread
             e.printStackTrace();
         }
     }
-
 }
