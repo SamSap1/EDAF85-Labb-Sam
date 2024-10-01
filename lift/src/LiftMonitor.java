@@ -8,8 +8,6 @@ public class LiftMonitor {
     private int [] priorityExit;
     private int toEnter;
     public boolean liftMoving;
-    private boolean entering;
-    private boolean exiting;
     private int maxPassengers;
     private LiftView lv;
     private int pplInLift;
@@ -21,8 +19,6 @@ public class LiftMonitor {
         direction = 1;
         doorsOpen = false;
         liftMoving = true;
-        entering = false;
-        exiting = false;
         priorityEntry = new int[floorCount];
         priorityExit = new int[floorCount];
         this.maxPassengers = maxPassengers;
@@ -89,24 +85,20 @@ public class LiftMonitor {
         {
             lv.openDoors(currFloor);
             doorsOpen = true;
-            
-            exiting = true;
             notifyAll();
 
             while (priorityExit[currFloor] != 0)
             {
                 wait();
             }
-            exiting = false;
 
-            entering = true;
             notifyAll();
             while (priorityEntry[currFloor] != 0 && pplInLift < maxPassengers)
             {
                 liftMoving = false;
                 wait();
             }
-            entering = false;
+
             doorsOpen = false;
             lv.closeDoors();
             
