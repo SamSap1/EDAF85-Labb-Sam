@@ -26,9 +26,13 @@ public class Wash {
 
             switch (n) {
                 case 1:
+                WashingProgram1 wp1 = new WashingProgram1(io, temp, water, spin);
+                   wp1.start();
                 break;
 
                 case 2:
+              //  WashingProgram2 wp2 = new WashingProgram2(io, temp, water, spin);
+                 //  wp2.start();
                 break;
 
                 case 3:
