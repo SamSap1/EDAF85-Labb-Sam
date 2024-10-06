@@ -11,6 +11,8 @@ public class WaterController extends ActorThread<WashingMessage> {
     private WashingIO io;
     private double inputFlow = 0.1;
     private double outputFlow = 0.2;
+    private boolean filledCapacity;
+    private boolean drainedComplete;
     private ActorThread<WashingMessage> send;
     private double WaterLevel;
 
@@ -35,13 +37,36 @@ public class WaterController extends ActorThread<WashingMessage> {
 
                     wm.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
 
+
                     if (wm != null){
+                        switch (wm.order()) {
+                            case WATER_IDLE:
+                                    io.fill(false);
+                                    io.drain(false);
 
+
+                                break;
+
+                             case WATER_DRAIN:
+                                drainedComplete = false;
+                                io.drain(true);
+                                io.fill(false);
+
+                                break;
+
+                              case WATER_FILL:
+                                io.fill(true);
+                                io.drain(false);
+                              break;      
+               
                         
-
-
-
+                            default:
+                                break;
+                        }
+    
                     }
+
+                    
                 
 
 
@@ -49,6 +74,7 @@ public class WaterController extends ActorThread<WashingMessage> {
 
             
         } catch (Exception e) {
+            throw new Error("sumting wong in watercontroller");
             // TODO: handle exception
         }
 
