@@ -6,35 +6,57 @@ import wash.io.WashingIO.Spin;
 
 public class SpinController extends ActorThread<WashingMessage>
 {
-    // TODO: add attributes
+    WashingIO io;
+    boolean spinLeft = false;
 
     public SpinController(WashingIO io)
     {
-        // TODO
+        this.io = io;
     }
 
     @Override
     public void run()
     {
-        // this is to demonstrate how to control the barrel spin:
-        // io.setSpinMode(Spin.IDLE);
-
         try
         {
-            // ... TODO ...
-
             while (true)
             {
                 // wait for up to a (simulated) minute for a WashingMessage
                 WashingMessage m = receiveWithTimeout(60000 / Settings.SPEEDUP);
-
                 // if m is null, it means a minute passed and no message was received
+
                 if (m != null)
                 {
-                    System.out.println("got " + m);
+                    if (spinLeft)
+                    {
+                        io.setSpinMode(Spin.LEFT);
+                    }
+                    else
+                    {
+                        io.setSpinMode(Spin.RIGHT);
+                    }
+                    spinLeft = !spinLeft;
                 }
+                else
+                {
+                    switch (m.order())
+                    {
+                        case SPIN_SLOW:
+                            io.setSpinMode(Spin.LEFT);
+                            send(new WashingMessage(this, WashingMessage.Order.ACKNOWLEDGMENT));
+                            break;
+                    
+                        case SPIN_FAST:
+                            io.setSpinMode(Spin.FAST);
+                            send(new WashingMessage(this, WashingMessage.Order.ACKNOWLEDGMENT));
+                            break;
 
-                // ... TODO ...
+                        case SPIN_OFF:
+                            io.setSpinMode(Spin.IDLE);
+                            send(new WashingMessage(this, WashingMessage.Order.ACKNOWLEDGMENT));
+                            break;
+                    }
+                }
             }
         } catch (InterruptedException unexpected)
         {
