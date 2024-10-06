@@ -4,6 +4,8 @@ import actor.ActorThread;
 import wash.io.WashingIO;
 import static wash.control.WashingMessage.Order.*;
 
+import javax.sound.midi.Receiver;
+
 public class WashingProgram1 extends ActorThread<WashingMessage>
 {
 
@@ -30,18 +32,30 @@ public class WashingProgram1 extends ActorThread<WashingMessage>
             io.lock(true);
             // Instruct SpinController to rotate barrel slowly, back and forth
             // Expect an acknowledgment in response.
-            System.out.println("setting SPIN_SLOW...");
+            spin.send(new WashingMessage(this, WATER_FILL));
+            receive();
+
+            spin.send(new WashingMessage(this, TEMP_SET_40));
+            receive();
+
             spin.send(new WashingMessage(this, SPIN_SLOW));
-            WashingMessage ack1 = receive();
-            System.out.println("washing program 1 got " + ack1);
+            receive();
+
+            spin.send(new WashingMessage(this, WATER_DRAIN));
+            receive();
+
+            for (int i = 0; i < 5; i++) 
+            {
+                
+            }
+
             // Spin for five simulated minutes (one minute == 60000 milliseconds)
-            Thread.sleep(5 * 60000 / Settings.SPEEDUP);
+            Thread.sleep(30 * 60000 / Settings.SPEEDUP);
             // Instruct SpinController to stop spin barrel spin.
             // Expect an acknowledgment in response.
-            System.out.println("setting SPIN_OFF...");
             spin.send(new WashingMessage(this, SPIN_OFF));
-            WashingMessage ack2 = receive();
-            System.out.println("washing program 1 got " + ack2);
+            receive();
+
             // Now that the barrel has stopped, it is safe to open the hatch.
             io.lock(false);
         } catch (InterruptedException e)
