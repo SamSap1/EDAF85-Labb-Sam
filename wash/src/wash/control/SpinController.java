@@ -25,7 +25,7 @@ public class SpinController extends ActorThread<WashingMessage>
                 WashingMessage m = receiveWithTimeout(60000 / Settings.SPEEDUP);
                 // if m is null, it means a minute passed and no message was received
 
-                if (m != null)
+                if (m == null)
                 {
                     if (spinLeft)
                     {
