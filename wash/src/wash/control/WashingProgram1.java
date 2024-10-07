@@ -1,10 +1,7 @@
 package wash.control;
-
 import actor.ActorThread;
 import wash.io.WashingIO;
 import static wash.control.WashingMessage.Order.*;
-
-import javax.sound.midi.Receiver;
 
 public class WashingProgram1 extends ActorThread<WashingMessage>
 {
@@ -28,10 +25,8 @@ public class WashingProgram1 extends ActorThread<WashingMessage>
     {
         try
         {
-            // Lock the hatch
             io.lock(true);
-            // Instruct SpinController to rotate barrel slowly, back and forth
-            // Expect an acknowledgment in response.
+
             spin.send(new WashingMessage(this, WATER_FILL));
             receive();
 
@@ -41,29 +36,33 @@ public class WashingProgram1 extends ActorThread<WashingMessage>
             spin.send(new WashingMessage(this, SPIN_SLOW));
             receive();
 
+            Thread.sleep(30 * 60000 / Settings.SPEEDUP);
+
             spin.send(new WashingMessage(this, WATER_DRAIN));
             receive();
 
             for (int i = 0; i < 5; i++) 
             {
-                
+                spin.send(new WashingMessage(this, WATER_FILL));
+                receive();
+
+                Thread.sleep(2 * 60000 / Settings.SPEEDUP);
+
+                spin.send(new WashingMessage(this, WATER_DRAIN));
+                receive();
             }
 
-            // Spin for five simulated minutes (one minute == 60000 milliseconds)
-            Thread.sleep(30 * 60000 / Settings.SPEEDUP);
-            // Instruct SpinController to stop spin barrel spin.
-            // Expect an acknowledgment in response.
-            spin.send(new WashingMessage(this, SPIN_OFF));
+            spin.send(new WashingMessage(this, SPIN_FAST));
             receive();
 
-            // Now that the barrel has stopped, it is safe to open the hatch.
+            Thread.sleep(5 * 60000 / Settings.SPEEDUP);
+
+            spin.send(new WashingMessage(this, SPIN_OFF));
+            receive();
+            
             io.lock(false);
         } catch (InterruptedException e)
         {
-
-            // If we end up here, it means the program was interrupt()'ed:
-            // set all controllers to idle
-
             temp.send(new WashingMessage(this, TEMP_IDLE));
             water.send(new WashingMessage(this, WATER_IDLE));
             spin.send(new WashingMessage(this, SPIN_OFF));

@@ -55,6 +55,9 @@ public class SpinController extends ActorThread<WashingMessage>
                             io.setSpinMode(Spin.IDLE);
                             send(new WashingMessage(this, WashingMessage.Order.ACKNOWLEDGMENT));
                             break;
+
+                        default:
+                            break;
                     }
                 }
             }

@@ -14,7 +14,6 @@ public class Wash {
         ActorThread<WashingMessage> temp = new TemperatureController(io);
         ActorThread<WashingMessage> water = new WaterController(io);
         ActorThread<WashingMessage> spin = new SpinController(io);
-        //WashingProgram3 wp3;
 
         temp.start();
         water.start();
@@ -24,20 +23,25 @@ public class Wash {
             int n = io.awaitButton();
             System.out.println("user selected program " + n);
 
-            switch (n) {
+            switch (n)
+            {
+                case 0:
+                    // uuh stoppa allt? idk om vi ska ha ett program för detta eller inte
+                    // låter typ som att vi ska ha det enligt kompendiet men inte enligt "TODO":n nedan
+                    break;
                 case 1:
-                WashingProgram1 wp1 = new WashingProgram1(io, temp, water, spin);
-                   wp1.start();
-                break;
+                    WashingProgram1 wp1 = new WashingProgram1(io, temp, water, spin);
+                    wp1.start();
+                    break;
 
                 case 2:
-              //  WashingProgram2 wp2 = new WashingProgram2(io, temp, water, spin);
-                 //  wp2.start();
-                break;
+                    WashingProgram2 wp2 = new WashingProgram2(io, temp, water, spin);
+                    wp2.start();
+                    break;
 
                 case 3:
-                   WashingProgram3 wp3 = new WashingProgram3(io, temp, water, spin);
-                   wp3.start();
+                    WashingProgram3 wp3 = new WashingProgram3(io, temp, water, spin);
+                    wp3.start();
                     break;
             
                 default:
