@@ -19,6 +19,10 @@ public class Wash {
         water.start();
         spin.start();
 
+        WashingProgram1 wp1 = null;
+        WashingProgram2 wp2 = null;
+        WashingProgram3 wp3 = null;
+
         while (true) {
             int n = io.awaitButton();
             System.out.println("user selected program " + n);
@@ -26,32 +30,32 @@ public class Wash {
             switch (n)
             {
                 case 0:
-                    // uuh stoppa allt? idk om vi ska ha ett program för detta eller inte
-                    // låter typ som att vi ska ha det enligt kompendiet men inte enligt "TODO":n nedan
+                    if (wp1.isAlive()) { wp1.interrupt(); }
+                    if (wp2.isAlive()) { wp2.interrupt(); }
+                    if (wp3.isAlive()) { wp3.interrupt(); }
+                    
+                    temp.interrupt();
+                    water.interrupt();
+                    spin.interrupt();
                     break;
                 case 1:
-                    WashingProgram1 wp1 = new WashingProgram1(io, temp, water, spin);
+                    wp1 = new WashingProgram1(io, temp, water, spin);
                     wp1.start();
                     break;
 
                 case 2:
-                    WashingProgram2 wp2 = new WashingProgram2(io, temp, water, spin);
+                    wp2 = new WashingProgram2(io, temp, water, spin);
                     wp2.start();
                     break;
 
                 case 3:
-                    WashingProgram3 wp3 = new WashingProgram3(io, temp, water, spin);
+                    wp3 = new WashingProgram3(io, temp, water, spin);
                     wp3.start();
                     break;
             
                 default:
                     break;
             }                    
-
-            
-            // TODO:
-            // if the user presses buttons 1-3, start a washing program
-            // if the user presses button 0, and a program has been started, stop it
         }
     }
 };
