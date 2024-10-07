@@ -48,15 +48,12 @@ public class WaterController extends ActorThread<WashingMessage> {
                                 break;
 
                              case WATER_DRAIN:
-                                drainedComplete = false;
-                                io.drain(true);
-                                io.fill(false);
+                                drainCheck();
 
                                 break;
 
                               case WATER_FILL:
-                                io.fill(true);
-                                io.drain(false);
+                              waterFillCheck();
                               break;      
                
                         
@@ -72,12 +69,58 @@ public class WaterController extends ActorThread<WashingMessage> {
 
             }
 
+
             
-        } catch (Exception e) {
-            throw new Error("sumting wong in watercontroller");
+        }
+        
+        catch (InterruptedException e){
+            System.out.println("WaterController");
+        }
+        
+        catch (Exception e) {
+            throw new Error("sumting wong in watercontroller:" + e.getMessage());
             // TODO: handle exception
         }
 
 
+
     }
+    private void waterFillCheck(){
+        double waterLevel = io.getWaterLevel();
+
+        io.drain(false);
+
+
+        if (waterLevel < 20){
+            io.fill(true);
+            filledCapacity = false;
+        } else{
+            io.fill(false);
+            filledCapacity = true;
+
+        }
+
+
+    }
+
+    private void drainCheck(){
+        double waterLevel = io.getWaterLevel();
+
+        io.fill(false);
+
+        if (waterLevel > 0){
+            io.drain(true);
+           drainedComplete = false;
+
+        }    else{
+            io.drain(false);
+            drainedComplete = true;
+
+        }
+
+
+    }
+
+
+
 }
