@@ -28,9 +28,14 @@ public class TemperatureController extends ActorThread<WashingMessage> {
             while (true){
                 WashingMessage wm = receiveWithTimeout(60000 / Settings.SPEEDUP);
 
-                
+                if (wm != null){
+                        switch (wm.order()){
 
 
+
+                        }
+
+                }
             }
             
         } catch (InterruptedException e) {

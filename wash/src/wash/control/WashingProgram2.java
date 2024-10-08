@@ -28,6 +28,7 @@ public class WashingProgram2 extends ActorThread<WashingMessage>
             io.lock(true);
             
             spin.send(new WashingMessage(this, WATER_FILL));
+            //System.out.println("fill control");
             receive();
 
             spin.send(new WashingMessage(this, TEMP_SET_40));
