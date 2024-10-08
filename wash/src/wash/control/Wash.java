@@ -16,10 +16,6 @@ public class Wash {
         ActorThread<WashingMessage> spin = new SpinController(io);
         ActorThread<WashingMessage> currProg = null;
 
-        // temp.start();
-        // water.start();
-        // spin.start();
-
         while (true) {
             int n = io.awaitButton();
             System.out.println("user selected program " + n);
@@ -27,11 +23,11 @@ public class Wash {
             switch (n)
             {
                 case 0:
-                    if (currProg.isAlive()) { currProg.interrupt(); currProg = null; }
-                    
-                    // temp.interrupt();
-                    // water.interrupt();
-                    // spin.interrupt();
+                    if (currProg.isAlive()) 
+                    { 
+                        currProg.interrupt(); 
+                        currProg = null; 
+                    }
                     break;
                     
                 case 1:
