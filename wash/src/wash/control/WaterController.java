@@ -33,27 +33,34 @@ public class WaterController extends ActorThread<WashingMessage> {
         // TODO
         try {
             while (true){
-                WashingMessage wm = receiveWithTimeout(60000 / Settings.SPEEDUP);
-
-                    wm.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
-
+                WashingMessage wm = receiveWithTimeout(500 / Settings.SPEEDUP);
 
                     if (wm != null){
+
+
                         switch (wm.order()) {
                             case WATER_IDLE:
                                     io.fill(false);
                                     io.drain(false);
-
+                            System.out.println("IDLE CHECK");
+                            wm.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
 
                                 break;
 
                              case WATER_DRAIN:
+                             System.out.println("DRAIN CHECK");
+
                                 drainCheck();
+                                wm.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
 
                                 break;
 
                               case WATER_FILL:
+                              System.out.println("FILL CHECK");
+
                               waterFillCheck();
+                              wm.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
+
                               break;      
                
                         
@@ -91,7 +98,7 @@ public class WaterController extends ActorThread<WashingMessage> {
         io.drain(false);
 
 
-        if (waterLevel < 20){
+        if (waterLevel < 10){
             io.fill(true);
             filledCapacity = false;
         } else{

@@ -15,9 +15,9 @@ public class Wash {
         ActorThread<WashingMessage> water = new WaterController(io);
         ActorThread<WashingMessage> spin = new SpinController(io);
 
-        temp.start();
-        water.start();
-        spin.start();
+     //   temp.start();
+       // water.start();
+        //spin.start();
 
         WashingProgram1 wp1 = null;
         WashingProgram2 wp2 = null;
@@ -39,16 +39,36 @@ public class Wash {
                     spin.interrupt();
                     break;
                 case 1:
+
+                
+        temp.start();
+        water.start();
+        spin.start();
+
+
                     wp1 = new WashingProgram1(io, temp, water, spin);
                     wp1.start();
                     break;
 
                 case 2:
+
+                
+        temp.start();
+        water.start();
+        spin.start();
+
                     wp2 = new WashingProgram2(io, temp, water, spin);
                     wp2.start();
                     break;
 
                 case 3:
+
+
+                
+        temp.start();
+        water.start();
+        spin.start();
+
                     wp3 = new WashingProgram3(io, temp, water, spin);
                     wp3.start();
                     break;
