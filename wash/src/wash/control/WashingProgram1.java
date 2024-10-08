@@ -27,10 +27,10 @@ public class WashingProgram1 extends ActorThread<WashingMessage>
         {
             io.lock(true);
 
-            spin.send(new WashingMessage(this, WATER_FILL));
+            water.send(new WashingMessage(this, WATER_FILL));
             receive();
 
-            spin.send(new WashingMessage(this, TEMP_SET_40));
+            temp.send(new WashingMessage(this, TEMP_SET_40));
             receive();
 
             spin.send(new WashingMessage(this, SPIN_SLOW));
@@ -38,17 +38,17 @@ public class WashingProgram1 extends ActorThread<WashingMessage>
 
             Thread.sleep(30 * 60000 / Settings.SPEEDUP);
 
-            spin.send(new WashingMessage(this, WATER_DRAIN));
+            water.send(new WashingMessage(this, WATER_DRAIN));
             receive();
 
             for (int i = 0; i < 5; i++) 
             {
-                spin.send(new WashingMessage(this, WATER_FILL));
+                water.send(new WashingMessage(this, WATER_FILL));
                 receive();
 
                 Thread.sleep(2 * 60000 / Settings.SPEEDUP);
 
-                spin.send(new WashingMessage(this, WATER_DRAIN));
+                water.send(new WashingMessage(this, WATER_DRAIN));
                 receive();
             }
 
