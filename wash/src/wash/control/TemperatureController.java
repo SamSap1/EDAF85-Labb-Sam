@@ -54,10 +54,9 @@ public class TemperatureController extends ActorThread<WashingMessage> {
                             case TEMP_SET_40:
                             if (io.getTemperature() < 38 + 0.0952){
                                 io.heat(true);
-                                if (msgFlag){
+                                
                                     oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
-                                    msgFlag = false;
-                                }
+                                 
                             } else if (io.getTemperature ()  > 40 -0.478){
                                 io.heat(false);
 
@@ -71,10 +70,9 @@ public class TemperatureController extends ActorThread<WashingMessage> {
                             case TEMP_SET_60:
                             if (io.getTemperature() < 58 + 0.0952){
                                 io.heat(true);
-                                if (msgFlag){
+                               
                                     oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
-                                    msgFlag = false;
-                                }
+                                
                             } else if (io.getTemperature ()  > 60 -0.478){
                                 io.heat(false);
                                 if (msgFlag){
