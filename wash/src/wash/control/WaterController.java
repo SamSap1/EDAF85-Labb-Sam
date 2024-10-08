@@ -7,25 +7,24 @@ import wash.io.WashingIO;
 
 public class WaterController extends ActorThread<WashingMessage> {
 
-    // TODO: add attributes
+   
     private WashingIO io;
     private boolean filledCapacity;
     private boolean drainedComplete;
     private boolean msgFlag;
     private ActorThread<WashingMessage> send;
-    private double WaterLevel;
     private WashingMessage.Order currentMessage;
     private WashingMessage oldMessage;
 
     public WaterController(WashingIO io) {
-        // TODO
+        
         this.io = io;
 
     }
 
     @Override
     public void run() {
-        // TODO
+        
         try {
             while (true) {
                 WashingMessage newMessage = receiveWithTimeout(500 / Settings.SPEEDUP);
