@@ -44,7 +44,7 @@ public class WaterController extends ActorThread<WashingMessage> {
                         case WATER_IDLE:
                             io.fill(false);
                             io.drain(false);
-                            //System.out.println("IDLE CHECK");
+                            System.out.println("IDLE CHECK");
                             oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
 
                             break;
@@ -69,6 +69,8 @@ public class WaterController extends ActorThread<WashingMessage> {
                             }
                             }
                             break;
+                            
+
 
                         case WATER_FILL:
                             System.out.println("FILL CHECK");
