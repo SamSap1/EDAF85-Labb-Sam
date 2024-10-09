@@ -10,7 +10,8 @@ public class TemperatureController extends ActorThread<WashingMessage>
     // private final double margin;
     private final WashingIO io;
     private boolean msgFlag;
-    // private WashingMessage wm;
+    private boolean tempCheck;
+    //private WashingMessage wm;
     private WashingMessage.Order currentMessage;
     private WashingMessage oldMessage;
 
@@ -57,41 +58,37 @@ public class TemperatureController extends ActorThread<WashingMessage>
                         
                         break;
 
-                    case TEMP_SET_40:
-                        if (io.getTemperature() < 38 + 0.0952)
-                        {
-                            io.heat(true);
-                            oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
-
-                        } else if (io.getTemperature() > 40 - 0.478)
-                        {
-                            io.heat(false);
-
-                            if (msgFlag)
-                            {
-                                oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
-                                msgFlag = false;
+                            case TEMP_SET_40:
+                            if (io.getTemperature() < 38 + 0.0952){
+                                tempCheck = false;
+                                io.heat(true);
+                                
+                                    oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
+                                 
+                            } else if (io.getTemperature ()  >= 40 -0.478 && !tempCheck){
+                                io.heat(false);
+                                tempCheck = true;
+                                if (msgFlag){
+                                    oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
+                                    msgFlag = false;
+                                }
                             }
-                        }
-                        break;
+                            break;
 
-                    case TEMP_SET_60:
-                        if (io.getTemperature() < 58 + 0.0952)
-                        {
-                            io.heat(true);
-
-                            oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
-
-                        } else if (io.getTemperature() > 60 - 0.478)
-                        {
-                            io.heat(false);
-                            if (msgFlag)
-                            {
-                                oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
-                                msgFlag = false;
-                            }
-                        }
-                        break;
+                            case TEMP_SET_60:
+                            if (io.getTemperature() < 58 + 0.0952){
+                                io.heat(true);
+                               tempCheck =  false;
+                                    oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
+                                
+                            } else if (io.getTemperature ()  >= 60 -0.478 && !tempCheck){
+                                io.heat(false);
+                                tempCheck = true;
+                                if (msgFlag){
+                                    oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
+                                    msgFlag = false;
+                                }                            }
+                            break;
 
                     default:
                     
