@@ -29,6 +29,8 @@ public class WaterController extends ActorThread<WashingMessage> {
             while (true) {
                 WashingMessage newMessage = receiveWithTimeout(500 / Settings.SPEEDUP);
 
+
+                //Koden funkar inte annars. Särskiljer nya/gamla meddelanden.
                 if (newMessage != null) {
                     if (currentMessage != null && currentMessage != newMessage.order()) {
                         msgFlag = true;
