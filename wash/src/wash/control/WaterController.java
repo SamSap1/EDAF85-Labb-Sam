@@ -21,7 +21,6 @@ public class WaterController extends ActorThread<WashingMessage> {
         this.io = io;
 
     }
-
     @Override
     public void run() {
         
@@ -32,7 +31,8 @@ public class WaterController extends ActorThread<WashingMessage> {
 
                 //Koden funkar inte annars. Särskiljer nya/gamla meddelanden.
                 if (newMessage != null) {
-                    if (currentMessage != null && currentMessage != newMessage.order()) {
+
+                    if (currentMessage != newMessage.order()) {
                         msgFlag = true;
 
                     }
@@ -47,49 +47,44 @@ public class WaterController extends ActorThread<WashingMessage> {
                             io.fill(false);
                             io.drain(false);
                            // System.out.println("IDLE CHECK");
-                            oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
+                           oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
 
                             break;
 
                         case WATER_DRAIN:
-                           // System.out.println("DRAIN CHECK");
-
-                            //double waterLevel = io.getWaterLevel();
-
-                           // io.fill(false);
-                    
+                       
+    
                             if (io.getWaterLevel() > 0) {
+                                io.fill(false);
                                 io.drain(true);
-                                drainedComplete = false;
+                                //drainedComplete = false;
                     
                             } else {
-                                io.drain(false);
-                                drainedComplete = true;
+                              //  io.drain(false);
+                               
                                 if(msgFlag){
+                                    System.out.println("Drain check1");
                                 oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
                                 msgFlag = false;
                             }
                             }
                             break;
-
-
-
+                        
                         case WATER_FILL:
-                           // System.out.println("");
+                    
 
-                           // double waterLevel = io.getWaterLevel();
+                            if (io.getWaterLevel() < 10) {
+                                io.drain(false);
 
-                            io.drain(false);
-
-                            if (io.getWaterLevel() < 10 && filledCapacity!=true) {
                                 io.fill(true);
-                                filledCapacity = false;
                             } else {
                                 io.fill(false);
-                                filledCapacity = true;
 
                                 if (msgFlag){
+
                                     oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
+                                    System.out.println("DO A ");
+
                                     msgFlag = false;
                                 }
 

@@ -1,73 +1,76 @@
 package wash.control;
 
+import static wash.control.WashingMessage.Order.ACKNOWLEDGMENT;
+import static wash.control.WashingMessage.Order.SPIN_FAST;
+import static wash.control.WashingMessage.Order.SPIN_OFF;
+
+import org.junit.jupiter.api.Order;
+
 import actor.ActorThread;
 import wash.io.WashingIO;
 import wash.io.WashingIO.Spin;
 
-public class SpinController extends ActorThread<WashingMessage>
-{
-    private WashingIO io;
-    private boolean spinLeft = false;
-    private boolean canSpin = true;
+public class SpinController extends ActorThread<WashingMessage> {
 
-    public SpinController(WashingIO io)
-    {
+    // TODO: add attributes
+    private WashingIO io;
+    private boolean spinDirection;
+    private boolean isInSlow;
+    
+    public SpinController(WashingIO io) {
         this.io = io;
+        this.spinDirection = false;
+        this.isInSlow = false;
+
+
     }
 
     @Override
-    public void run()
-    {
-        try
-        {
-            while (true)
-            {
-                WashingMessage m = receiveWithTimeout(60000 / Settings.SPEEDUP);
+    public void run() {
 
-                if (m == null)
-                {
-                    if (canSpin)
-                    {
-                        if (spinLeft)
-                        {
-                            io.setSpinMode(Spin.LEFT);
-                        }
-                        else
-                        {
-                            io.setSpinMode(Spin.RIGHT);
-                        }
-                        spinLeft = !spinLeft;
-                    }
-                }
-                else
-                {
-                    switch (m.order())
-                    {
+        // this is to demonstrate how to control the barrel spin:
+        // io.setSpinMode(Spin.IDLE);
+        
+        try {
+            // ... TODO ...
+            while (true) {
+                // wait for up to a (simulated) minute for a WashingMessage
+                WashingMessage m = receiveWithTimeout(60000 / Settings.SPEEDUP);
+                // if m is null, it means a minute passed and no message was received
+                if (m != null) {
+                    System.out.println("got " + m);
+                    switch(m.order()){
+
                         case SPIN_SLOW:
-                            canSpin = true;
-                            io.setSpinMode(Spin.LEFT);
-                            send(new WashingMessage(this, WashingMessage.Order.ACKNOWLEDGMENT));
-                            break;
-                    
+                        isInSlow = true;
+                            io.setSpinMode( spinDirection ? Spin.LEFT : Spin.RIGHT);
+                            m.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
+                        break;
+
                         case SPIN_FAST:
-                            canSpin = true;
+                        isInSlow = false;
                             io.setSpinMode(Spin.FAST);
-                            send(new WashingMessage(this, WashingMessage.Order.ACKNOWLEDGMENT));
-                            break;
+                            m.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
+                        break;
 
                         case SPIN_OFF:
-                            canSpin = false;
+                        isInSlow = false;
                             io.setSpinMode(Spin.IDLE);
-                            send(new WashingMessage(this, WashingMessage.Order.ACKNOWLEDGMENT));
-                            break;
+                            m.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
+                        break; 
 
                         default:
                             break;
-                    }
+
+                    } 
+    
+                } if(m == null && isInSlow){
+                    spinDirection = !spinDirection;
+                    io.setSpinMode(spinDirection ? Spin.LEFT : Spin.RIGHT);
                 }
+                
             }
-        } catch (InterruptedException unexpected)
-        {
+        } catch (InterruptedException unexpected) {
             // we don't expect this thread to be interrupted,
             // so throw an error if it happens anyway
             throw new Error(unexpected);
