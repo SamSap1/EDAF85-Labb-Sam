@@ -9,8 +9,7 @@ public class WaterController extends ActorThread<WashingMessage> {
 
    
     private WashingIO io;
-    private boolean filledCapacity;
-    private boolean drainedComplete;
+   
     private boolean msgFlag;
     private ActorThread<WashingMessage> send;
     private WashingMessage.Order currentMessage;
