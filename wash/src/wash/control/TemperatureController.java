@@ -5,35 +5,38 @@ import static wash.control.WashingMessage.Order.ACKNOWLEDGMENT;
 import actor.ActorThread;
 import wash.io.WashingIO;
 
-
-
-
-public class TemperatureController extends ActorThread<WashingMessage> {
-    //private final double margin;
+public class TemperatureController extends ActorThread<WashingMessage>
+{
+    // private final double margin;
     private final WashingIO io;
     private boolean msgFlag;
-    //private WashingMessage wm;
+    // private WashingMessage wm;
     private WashingMessage.Order currentMessage;
     private WashingMessage oldMessage;
 
     // TODO: add attributes
 
-    public TemperatureController(WashingIO io) {
+    public TemperatureController(WashingIO io)
+    {
         // TODO
 
         this.io = io;
-        
 
     }
 
     @Override
-    public void run() {
-        try {
-            while (true){
+    public void run()
+    {
+        try
+        {
+            while (true)
+            {
                 WashingMessage newMessage = receiveWithTimeout(500 / Settings.SPEEDUP);
 
-                if (newMessage != null) {
-                    if (currentMessage != null && currentMessage != newMessage.order()) {
+                if (newMessage != null)
+                {
+                    if (currentMessage != null && currentMessage != newMessage.order())
+                    {
                         msgFlag = true;
 
                     }
@@ -42,61 +45,72 @@ public class TemperatureController extends ActorThread<WashingMessage> {
 
                 }
 
-                if (currentMessage != null){
+                if (currentMessage != null)
+                {
+                    //System.out.print("heating!!!!");
+                    switch (currentMessage)
+                    {
 
-                        switch (currentMessage){
-
-                           case TEMP_IDLE:
-                            io.heat(false);
-                            oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
-                            break;
-
-                            case TEMP_SET_40:
-                            if (io.getTemperature() < 38 + 0.0952){
-                                io.heat(true);
-                                
-                                    oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
-                                 
-                            } else if (io.getTemperature ()  > 40 -0.478){
-                                io.heat(false);
-
-                                if (msgFlag){
-                                    oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
-                                    msgFlag = false;
-                                }
-                            }
-                            break;
-
-                            case TEMP_SET_60:
-                            if (io.getTemperature() < 58 + 0.0952){
-                                io.heat(true);
-                               
-                                    oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
-                                
-                            } else if (io.getTemperature ()  > 60 -0.478){
-                                io.heat(false);
-                                if (msgFlag){
-                                    oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
-                                    msgFlag = false;
-                                }                            }
-                            break;
-
-                            default:
-                            break;
-
-                        }
+                    case TEMP_IDLE:
+                        io.heat(false);
+                        oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
                         
+                        break;
+
+                    case TEMP_SET_40:
+                        if (io.getTemperature() < 38 + 0.0952)
+                        {
+                            io.heat(true);
+                            oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
+
+                        } else if (io.getTemperature() > 40 - 0.478)
+                        {
+                            io.heat(false);
+
+                            if (msgFlag)
+                            {
+                                oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
+                                msgFlag = false;
+                            }
+                        }
+                        break;
+
+                    case TEMP_SET_60:
+                        if (io.getTemperature() < 58 + 0.0952)
+                        {
+                            io.heat(true);
+
+                            oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
+
+                        } else if (io.getTemperature() > 60 - 0.478)
+                        {
+                            io.heat(false);
+                            if (msgFlag)
+                            {
+                                oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
+                                msgFlag = false;
+                            }
+                        }
+                        break;
+
+                    default:
+                    
+                        break;
+
+                    }
 
                 }
 
             }
-            
-        } catch (InterruptedException e) {
+
+        } catch (InterruptedException e)
+        {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        catch (Exception e) {
+        catch (Exception e)
+        {
             throw new Error("sumting wong in watercontroller:" + e.getMessage());
         }
 

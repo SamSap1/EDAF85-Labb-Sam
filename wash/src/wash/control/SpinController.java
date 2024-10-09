@@ -6,8 +6,9 @@ import wash.io.WashingIO.Spin;
 
 public class SpinController extends ActorThread<WashingMessage>
 {
-    WashingIO io;
-    boolean spinLeft = false;
+    private WashingIO io;
+    private boolean spinLeft = false;
+    private boolean canSpin = true;
 
     public SpinController(WashingIO io)
     {
@@ -21,37 +22,41 @@ public class SpinController extends ActorThread<WashingMessage>
         {
             while (true)
             {
-                // wait for up to a (simulated) minute for a WashingMessage
                 WashingMessage m = receiveWithTimeout(60000 / Settings.SPEEDUP);
-                // if m is null, it means a minute passed and no message was received
 
                 if (m == null)
                 {
-                    if (spinLeft)
+                    if (canSpin)
                     {
-                        io.setSpinMode(Spin.LEFT);
+                        if (spinLeft)
+                        {
+                            io.setSpinMode(Spin.LEFT);
+                        }
+                        else
+                        {
+                            io.setSpinMode(Spin.RIGHT);
+                        }
+                        spinLeft = !spinLeft;
                     }
-                    else
-                    {
-                        io.setSpinMode(Spin.RIGHT);
-                    }
-                    spinLeft = !spinLeft;
                 }
                 else
                 {
                     switch (m.order())
                     {
                         case SPIN_SLOW:
+                            canSpin = true;
                             io.setSpinMode(Spin.LEFT);
                             send(new WashingMessage(this, WashingMessage.Order.ACKNOWLEDGMENT));
                             break;
                     
                         case SPIN_FAST:
+                            canSpin = true;
                             io.setSpinMode(Spin.FAST);
                             send(new WashingMessage(this, WashingMessage.Order.ACKNOWLEDGMENT));
                             break;
 
                         case SPIN_OFF:
+                            canSpin = false;
                             io.setSpinMode(Spin.IDLE);
                             send(new WashingMessage(this, WashingMessage.Order.ACKNOWLEDGMENT));
                             break;

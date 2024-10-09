@@ -58,7 +58,7 @@ public class WaterController extends ActorThread<WashingMessage> {
 
                             io.fill(false);
                     
-                            if (io.getWaterLevel() > 0 && drainedComplete != true) {
+                            if (io.getWaterLevel() > 0) {
                                 io.drain(true);
                                 drainedComplete = false;
                     

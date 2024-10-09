@@ -49,9 +49,7 @@ public class Wash {
                     break;
 
                 case 3:
-                    temp.start();
-                    water.start();
-                    spin.start();
+                    
 
                     currProg = new WashingProgram3(io, temp, water, spin);
                     currProg.start();
