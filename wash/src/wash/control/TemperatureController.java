@@ -64,7 +64,7 @@ public class TemperatureController extends ActorThread<WashingMessage>
                             case TEMP_SET_40:
 
                             if (io.getTemperature() < 38 + 0.0952){
-                                System.out.println("TEMP SET 40 CHECK");
+                                //System.out.println("TEMP SET 40 CHECK");
 
                                
                                 io.heat(true);
@@ -76,7 +76,7 @@ public class TemperatureController extends ActorThread<WashingMessage>
                                 io.heat(false);
                                 
                                 if (msgFlag){
-                                    System.out.print("heating!!!!");
+                                    //System.out.print("heating!!!!");
                                     oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
                                     msgFlag = false;
                                 }

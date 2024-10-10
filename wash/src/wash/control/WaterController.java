@@ -62,7 +62,7 @@ public class WaterController extends ActorThread<WashingMessage> {
                               //  io.drain(false);
                                
                                 if(msgFlag){
-                                    System.out.println("Drain check1");
+                                    //System.out.println("Drain check1");
                                 oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
                                 msgFlag = false;
                             }
@@ -82,7 +82,7 @@ public class WaterController extends ActorThread<WashingMessage> {
                                 if (msgFlag){
 
                                     oldMessage.sender().send(new WashingMessage(this, ACKNOWLEDGMENT));
-                                    System.out.println("DO A ");
+                                    //System.out.println("DO A ");
 
                                     msgFlag = false;
                                 }
