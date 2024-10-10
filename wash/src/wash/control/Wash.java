@@ -15,6 +15,10 @@ public class Wash {
         ActorThread<WashingMessage> water = new WaterController(io);
         ActorThread<WashingMessage> spin = new SpinController(io);
         ActorThread<WashingMessage> currProg = null;
+        
+        temp.start();
+        water.start();
+        spin.start();
 
         while (true) {
             int n = io.awaitButton();
@@ -31,26 +35,16 @@ public class Wash {
                     break;
                     
                 case 1:
-                    temp.start();
-                    water.start();
-                    spin.start();
-
                     currProg = new WashingProgram1(io, temp, water, spin);
                     currProg.start();
                     break;
 
                 case 2:
-                    temp.start();
-                    water.start();
-                    spin.start();
-
                     currProg = new WashingProgram2(io, temp, water, spin);
                     currProg.start();
                     break;
 
                 case 3:
-                    
-
                     currProg = new WashingProgram3(io, temp, water, spin);
                     currProg.start();
                     break;

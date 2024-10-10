@@ -30,11 +30,13 @@ public class WashingProgram3 extends ActorThread<WashingMessage>
 
             spin.send(new WashingMessage(this, SPIN_OFF));
             receive();
-
+            
             water.send(new WashingMessage(this, WATER_DRAIN));
             receive();
             
             water.send(new WashingMessage(this, WATER_IDLE));
+            receive();
+            
 
             io.lock(false);
         } catch (InterruptedException e)
