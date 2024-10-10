@@ -40,9 +40,6 @@ public class WashingProgram2 extends ActorThread<WashingMessage>
 
             temp.send(new WashingMessage(this, TEMP_IDLE));
             receive();
-
-            spin.send(new WashingMessage(this, SPIN_OFF));
-            receive();
             
             water.send(new WashingMessage(this, WATER_DRAIN));
             receive();
@@ -51,9 +48,6 @@ public class WashingProgram2 extends ActorThread<WashingMessage>
             receive();
 
             temp.send(new WashingMessage(this, TEMP_SET_60));
-            receive();
-
-            spin.send(new WashingMessage(this, SPIN_SLOW));
             receive();
 
             Thread.sleep(30 * 60000 / Settings.SPEEDUP);
